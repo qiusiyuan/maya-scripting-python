@@ -5,10 +5,17 @@ import sys
 import re
 import pymel.core as pm
 
-project_name = "my_pro"
+project_name = "my_pro"#default new project name,should be modified
 chosen_dir = ""
 dirID = "project_choose"
 new_name =""
+
+#folder list to add into new project
+add_on_list = ["cache/nCache/fluid","data","images","scenes/edits","renderData/fur/furShadowMap","scripts",
+"renderData/shaders","renderData/fur/furFiles","renderData/fur/furEqualMap","movies","autosave","sound",
+"Time Editor","renderData/iprImages","sourceimages/3dPaintTextures","cache/particles","sourceimages","clips",
+"renderData/fur/furImages","renderData/depth","sceneAssembly","Time Editor/Clip Exports","cache/bifrost",
+"renderData/fur/furAttrMap","assets"]
 #browse to show new project
 def create_new(*pargs):
         global new_name
@@ -16,11 +23,8 @@ def create_new(*pargs):
         if len(name) < 8:
             cmds.sysFile("/Users/ntdstaff/Library/Preferences/Autodesk/maya/2017/projects/"+name, md=True)
             pm.mel.setProject("/Users/ntdstaff/Library/Preferences/Autodesk/maya/2017/projects/"+name)
-            cmds.sysFile("/Users/ntdstaff/Library/Preferences/Autodesk/maya/2017/projects/"+name +"/scenes",md =True)
-            cmds.sysFile("/Users/ntdstaff/Library/Preferences/Autodesk/maya/2017/projects/"+name +"/particles",md =True)
-            cmds.sysFile("/Users/ntdstaff/Library/Preferences/Autodesk/maya/2017/projects/"+name +"/renders",md =True)
-            cmds.sysFile("/Users/ntdstaff/Library/Preferences/Autodesk/maya/2017/projects/"+name +"/scripts",md =True)
-            cmds.sysFile("/Users/ntdstaff/Library/Preferences/Autodesk/maya/2017/projects/"+name +"/textures",md =True)
+            for newfolder in add_on_list:
+                cmds.sysFile("/Users/ntdstaff/Library/Preferences/Autodesk/maya/2017/projects/"+name+"/"+newfolder, md=True)
         #file dialog
         cmds.fileDialog2(dir = "/Users/ntdstaff/Library/Preferences/Autodesk/maya/2017/projects/"+name,ds = 1,fm=2)
         
@@ -126,25 +130,14 @@ def saveScene( fileName):
 def myFileBrowser(*pargs):
     global windowID
     multipleFilters = "Maya Files (*.ma *.mb);;Maya ASCII (*.ma);;Maya Binary (*.mb)"
-    val = cmds.fileDialog2( ff=multipleFilters,ds =2)
+    val = cmds.fileDialog2( ff=multipleFilters,ds =2,fm = 0)
     if val:
          print val
          saveScene(val[-1])
          if cmds.window(windowID, exists =True):
             cmds.deleteUI(windowID)
 
-###
-def browseFile():
-    global windowID
-    window = cmds.window(windowID, h = 100, w =200)
-    cmds.rowColumnLayout( numberOfRows=2 )
-    cmds.text(label= "Save your scene at")
-    cmds.rowColumnLayout(numberOfColumns =3, columnWidth= [(1,75),(2,60),(3,60)], columnOffset = [(1,'right',3)])
-    cmds.separator(h= 10)
-    cmds.button(label = "browse...",command = myFileBrowser)
-    
 
-    cmds.showWindow(window )
-###
 
+###
 browseDir()
