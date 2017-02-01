@@ -20,26 +20,30 @@ add_on_list = ["cache/nCache/fluid","data","images","scenes/edits","renderData/f
 def create_new(*pargs):
         global new_name
         name = str(cmds.textField(new_name,query = True,text = True))
-        if len(name) < 8:
+        def condition(name):#specify the new project name restriction
+            if len(name)<8:
+                return True
+            return False
+        if condition(name):
             cmds.sysFile("/Users/ntdstaff/Library/Preferences/Autodesk/maya/2017/projects/"+name, md=True)
             pm.mel.setProject("/Users/ntdstaff/Library/Preferences/Autodesk/maya/2017/projects/"+name)
             for newfolder in add_on_list:
                 cmds.sysFile("/Users/ntdstaff/Library/Preferences/Autodesk/maya/2017/projects/"+name+"/"+newfolder, md=True)
         #file dialog
-        cmds.fileDialog2(dir = "/Users/ntdstaff/Library/Preferences/Autodesk/maya/2017/projects/"+name,ds = 1,fm=2)
+            cmds.fileDialog2(dir = "/Users/ntdstaff/Library/Preferences/Autodesk/maya/2017/projects/"+name,ds = 1,fm=2)
         
         #block for create good
-        while cmds.window("good",exists = True):
-            cmds.deleteUI("good")
-        cmds.window("good",h=100,w=200)
-        cmds.rowColumnLayout(numberOfRows=2)
-        cmds.text(label = "your project %s has been chosen as working directory" %(name))
-        def deleteWi(*pargs):
-            cmds.deleteUI("new")
-            cmds.deleteUI("good")
-            cmds.deleteUI(dirID)
-        cmds.button(label ="Ok",command = deleteWi)
-        cmds.showWindow("good")
+            while cmds.window("good",exists = True):
+                cmds.deleteUI("good")
+            cmds.window("good",h=100,w=200)
+            cmds.rowColumnLayout(numberOfRows=2)
+            cmds.text(label = "your project %s has been chosen as working directory" %(name))
+            def deleteWi(*pargs):
+                cmds.deleteUI("new")
+                cmds.deleteUI("good")
+                cmds.deleteUI(dirID)
+            cmds.button(label ="Ok",command = deleteWi)
+            cmds.showWindow("good")
         
 #create a new project
 def newPro(*parg):
